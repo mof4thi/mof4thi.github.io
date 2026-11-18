@@ -1,5 +1,20 @@
 ---
 import Base from '../layouts/Base.astro';
+
+const focus = [
+  {
+    title: 'Blue team and SOC',
+    text: 'Alert triage, detection, and incident handling, learned in a SOC apprenticeship.',
+  },
+  {
+    title: 'Offensive security',
+    text: 'Methodical pentesting practice, currently working toward the HTB CPTS.',
+  },
+  {
+    title: 'Security and AI',
+    text: 'The overlap I studied in my MSc: using ML to defend, and securing ML systems.',
+  },
+];
 ---
 
 <Base title="About" description="About Mohammed Fathi: cybersecurity, SOC experience, and HTB CPTS preparation.">
@@ -20,6 +35,19 @@ import Base from '../layouts/Base.astro';
         (Certified Penetration Testing Specialist). Understanding how attacks work makes me a better
         defender, and the reverse is true too.
       </p>
+      <section class="section">
+      <p class="eyebrow">Focus</p>
+      <div class="cards">
+        {
+          focus.map((f) => (
+            <div class="card">
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
 
       <dl class="facts">
         <dt>Location</dt>
