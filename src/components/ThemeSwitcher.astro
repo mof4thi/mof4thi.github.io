@@ -1,0 +1,84 @@
+---
+// To add a theme: add an entry here, a matching [data-theme='id'] block in
+// src/styles/global.css, and the id to the allowed list in layouts/Base.astro.
+const themes = [
+  { id: 'terminal', label: 'Terminal green', color: '#4ade80' },
+  { id: 'ocean', label: 'Ocean blue', color: '#5eb0ff' },
+  { id: 'ember', label: 'Ember amber', color: '#ffb454' },
+  { id: 'violet', label: 'Violet', color: '#b794f6' },
+  { id: 'daylight', label: 'Daylight (light)', color: '#f6f5f1' },
+];
+---
+
+<div class="themes" role="group" aria-label="Color theme">
+  {
+    themes.map((t) => (
+      <button
+        type="button"
+        class="swatch"
+        data-theme-id={t.id}
+        style={`--c:${t.color}`}
+        aria-label={t.label}
+        aria-pressed="false"
+        title={t.label}
+      />
+    ))
+  }
+</div>
+
+<script>
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.swatch');
+
+  const mark = () => {
+    buttons.forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.themeId === root.dataset.theme)),
+    );
+  };
+
+  buttons.forEach((b) => {
+    b.addEventListener('click', () => {
+      const id = b.dataset.themeId;
+      if (!id) return;
+      root.dataset.theme = id;
+      try {
+        localStorage.setItem('theme', id);
+      } catch {
+        // storage can be blocked (private mode); the theme still applies for this visit
+      }
+      mark();
+    });
+  });
+
+  mark();
+</script>
+
+<style>
+  .themes {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-left: 18px;
+    border-left: 1px solid var(--border);
+  }
+
+  .swatch {
+    width: 17px;
+    height: 17px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--c);
+    border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+    cursor: pointer;
+    transition: transform 0.12s ease;
+  }
+
+  .swatch:hover {
+    transform: scale(1.18);
+  }
+
+  .swatch[aria-pressed='true'] {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+</style>

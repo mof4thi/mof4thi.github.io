@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+
+const links = [
+  { label: 'LinkedIn', handle: 'mohammed-fathi-44325221a', href: 'https://www.linkedin.com/in/mohammed-fathi-44325221a' },
+  { label: 'GitHub', handle: 'mof4thi', href: 'https://github.com/mof4thi' },
+  // Optional: add your Hack The Box profile here once you want it public, for example:
+  // { label: 'Hack The Box', handle: 'your-username', href: 'https://app.hackthebox.com/users/YOUR_ID' },
+];
+---
+
+<Base title="Contact" description="Get in touch with Mohammed Fathi.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="eyebrow">Contact</p>
+      <h1>Let's talk</h1>
+      <p>The best way to reach me is through LinkedIn. I'm happy to talk about security, writeups, or opportunities.</p>
+    </header>
+
+    <ul class="link-list">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href}>
+              <span>{l.label}</span>
+              <span class="mono">{l.handle} →</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>

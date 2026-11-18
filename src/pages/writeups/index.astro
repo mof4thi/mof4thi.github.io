@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writeups', ({ data }) => import.meta.env.DEV || !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Base title="Writeups" description="Lab writeups, investigations and notes on cybersecurity.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="eyebrow">Writeups</p>
+      <h1>Notes from the lab</h1>
+      <p>Retired-machine writeups, investigations, and things I learned along the way.</p>
+    </header>
+
+    <div class="post-list">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </div>
+</Base>
