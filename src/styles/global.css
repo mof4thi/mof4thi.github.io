@@ -6,7 +6,19 @@
    3. add the id to the allowed list in the inline script in layouts/Base.astro
 ------------------------------------------------------------------- */
 
+
 :root,
+[data-theme='ocean'] {
+  --bg: #0b1118;
+  --surface: #111a24;
+  --border: #22313f;
+  --text: #d6e1ec;
+  --muted: #8396a8;
+  --accent: #5eb0ff;
+  --accent-ink: #04121f;
+  --code-bg: #080d13;
+}
+
 [data-theme='terminal'] {
   --bg: #0d1210;
   --surface: #131a16;
@@ -18,16 +30,6 @@
   --code-bg: #0a0f0c;
 }
 
-[data-theme='ocean'] {
-  --bg: #0b1118;
-  --surface: #111a24;
-  --border: #22313f;
-  --text: #d6e1ec;
-  --muted: #8396a8;
-  --accent: #5eb0ff;
-  --accent-ink: #04121f;
-  --code-bg: #080d13;
-}
 
 [data-theme='ember'] {
   --bg: #14100b;

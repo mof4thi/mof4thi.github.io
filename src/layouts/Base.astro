@@ -46,7 +46,7 @@ const isActive = (href: string) => path.startsWith(href);
     <!-- Apply the saved theme before first paint to avoid a flash. -->
     <script is:inline>
       try {
-        var allowed = ['terminal', 'ocean', 'ember', 'violet', 'daylight'];
+        var allowed = [ 'ocean', 'terminal', 'daylight'];
         var saved = localStorage.getItem('theme');
         if (saved && allowed.indexOf(saved) !== -1) {
           document.documentElement.setAttribute('data-theme', saved);
@@ -57,7 +57,7 @@ const isActive = (href: string) => path.startsWith(href);
   <body>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href="/"><span class="brand-mark"></span>mof4thi</a>
+        <a class="brand" href="/"><span class="brand-mark"></span>Home</a>
         <nav class="nav" aria-label="Main">
           {
             nav.map((item) => (
