@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import ThemeSwitcher from '../components/ThemeSwitcher.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const siteName = 'Mohammed Fathi';
+const {
+  title,
+  description = 'Cybersecurity notes, writeups and projects by Mohammed Fathi.',
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${siteName}` : `${siteName} · Cybersecurity`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+const year = new Date().getFullYear();
+
+const nav = [
+  { href: '/writeups/', label: 'writeups' },
+//  { href: '/projects/', label: 'projects' },
+  { href: '/about/', label: 'about' },
+  { href: '/contact/', label: 'contact' },
+];
+const isActive = (href: string) => path.startsWith(href);
+---
+
+<!doctype html>
+<html lang="en" data-theme="ocean">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={`${siteName} writeups`} href="/rss.xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Apply the saved theme before first paint to avoid a flash. -->
+    <script is:inline>
+      try {
+        var allowed = [ 'ocean', 'terminal', 'daylight'];
+        var saved = localStorage.getItem('theme');
+        if (saved && allowed.indexOf(saved) !== -1) {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/"><span class="brand-mark"></span>Home</a>
+        <nav class="nav" aria-label="Main">
+          {
+            nav.map((item) => (
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+          <ThemeSwitcher />
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© {year}</span>
+        <span class="footer-links">
+          <a href="https://github.com/mof4thi">GitHub</a>
+          <a href="https://www.linkedin.com/in/mohammed-fathi-44325221a">LinkedIn</a>
+          <a href="/rss.xml">RSS</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -19,16 +19,6 @@
   --code-bg: #080d13;
 }
 
-[data-theme='terminal'] {
-  --bg: #0d1210;
-  --surface: #131a16;
-  --border: #26332b;
-  --text: #d7e0da;
-  --muted: #8a9a90;
-  --accent: #4ade80;
-  --accent-ink: #07130b;
-  --code-bg: #0a0f0c;
-}
 
 
 [data-theme='ember'] {

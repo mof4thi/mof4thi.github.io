@@ -15,6 +15,7 @@ const {
 
 const fullTitle = title ? `${title} · ${siteName}` : `${siteName} · Cybersecurity`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og-image.png', Astro.site); // ADDED
 const path = Astro.url.pathname;
 const year = new Date().getFullYear();
 
@@ -41,6 +42,10 @@ const isActive = (href: string) => path.startsWith(href);
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} /> <!-- ADDED -->
+    <meta property="og:image:width" content="1200" /> <!-- ADDED -->
+    <meta property="og:image:height" content="627" /> <!-- ADDED -->
+    <meta name="twitter:card" content="summary_large_image" /> <!-- ADDED -->
     <meta name="generator" content={Astro.generator} />
 
     <!-- Apply the saved theme before first paint to avoid a flash. -->
@@ -57,7 +62,13 @@ const isActive = (href: string) => path.startsWith(href);
   <body>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href="/"><span class="brand-mark"></span>Home</a>
+<a class="brand" href="/">
+  <svg class="brand-logo" viewBox="0 0 64 64" width="32" height="32" aria-hidden="true">
+    <rect x="1" y="1" width="62" height="62" rx="14" stroke-width="2" style="fill: var(--surface); stroke: var(--border)" />
+    <path d="M14 46V18l18 20 18-20v28" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--accent)" />
+  </svg>
+  Home
+</a>
         <nav class="nav" aria-label="Main">
           {
             nav.map((item) => (
