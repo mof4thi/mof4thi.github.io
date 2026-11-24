@@ -1,0 +1,177 @@
+---
+// Homepage terminal panel. Everything is rendered as plain HTML first, so it
+// reads fine without JavaScript; the script then replays it line by line.
+import { localize, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  latest?: { id: string; title: string };
+}
+const { lang, latest } = Astro.props;
+const t = useTranslations(lang);
+
+// Change 'wip' to 'done' here once the CPTS is passed.
+const status = [
+  { k: 'msc', what: t('term.msc'), state: 'done' },
+  { k: 'soc', what: t('term.soc'), state: 'done' },
+  { k: 'cpts', what: t('term.cpts'), state: 'wip' },
+];
+const pad = Math.max(...status.map((s) => s.what.length)) + 2;
+---
+
+<div class="term" aria-label={t('term.label')}>
+  <div class="term-bar">mf@paris: ~</div>
+  <div class="term-body">
+    <p class="tl" data-cmd><span class="ps">$</span> <span class="c">whoami</span></p>
+    <p class="tl out">{t('term.whoami')}</p>
+
+    <p class="tl" data-cmd><span class="ps">$</span> <span class="c">cat status.txt</span></p>
+    {
+      status.map((s) => (
+        <p class="tl out"><span class="k">{s.k.padEnd(5)}</span>{s.what.padEnd(pad)}<span class={s.state}>{t(s.state === 'done' ? 'term.done' : 'term.wip')}</span></p>
+      ))
+    }
+
+    {
+      latest && (
+        <>
+          <p class="tl" data-cmd><span class="ps">$</span> <span class="c">ls -t articles/ | head -1</span></p>
+          <p class="tl out"><a href={localize(lang, `/articles/${latest.id}/`)}>{latest.id}.md</a></p>
+        </>
+      )
+    }
+
+    <p class="tl"><span class="ps">$</span> <span class="cursor" aria-hidden="true"></span></p>
+  </div>
+</div>
+
+<script>
+  const body = document.querySelector<HTMLElement>('.term-body');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (body && !reduce) {
+    const lines = Array.from(body.querySelectorAll<HTMLElement>('.tl'));
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    lines.forEach((l) => l.classList.add('pending'));
+
+    (async () => {
+      await wait(900);
+      for (const line of lines) {
+        line.classList.remove('pending');
+        const cmd = line.hasAttribute('data-cmd') ? line.querySelector<HTMLElement>('.c') : null;
+        if (cmd) {
+          const text = cmd.textContent ?? '';
+          cmd.textContent = '';
+          for (const ch of text) {
+            cmd.textContent += ch;
+            await wait(28 + Math.random() * 45);
+          }
+          await wait(220);
+        } else {
+          await wait(70);
+        }
+      }
+    })();
+  }
+</script>
+
+<style>
+  .term {
+    background: #0e0f10;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    color: #e2e2df;
+    box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.6);
+  }
+
+  .term-bar {
+    padding: 8px 16px;
+    border-bottom: 1px solid #26282b;
+    color: #7f838a;
+    font-size: 12.5px;
+  }
+
+  .term-body {
+    padding: 14px 18px 18px;
+    min-height: 17.5em;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2b2e32 transparent;
+  }
+
+  @media (max-width: 480px) {
+    .term {
+      font-size: 12px;
+    }
+    .term-body {
+      padding: 12px 14px 14px;
+    }
+  }
+
+  .tl {
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tl.pending {
+    visibility: hidden;
+  }
+
+  .out {
+    color: #a9acb2;
+  }
+
+  .tl + [data-cmd] {
+    margin-top: 0.55em;
+  }
+
+  .ps {
+    color: var(--term-accent);
+  }
+
+  .k {
+    color: #e2e2df;
+  }
+
+  .done {
+    color: #7fbf8a;
+  }
+
+  .wip {
+    color: #e3c46b;
+  }
+
+  .term a {
+    color: #e2e2df;
+  }
+
+  .term a:hover {
+    color: var(--term-accent);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    vertical-align: -0.2em;
+    background: var(--term-accent);
+    animation: blink 1s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+    }
+  }
+</style>

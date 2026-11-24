@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const links = [
+  { label: t('contact.email'), handle: 'mohammed.fathi.tech@gmail.com', href: 'mailto:mohammed.fathi.tech@gmail.com' },
+  { label: 'LinkedIn', handle: 'fathi-mo', href: 'https://www.linkedin.com/in/fathi-mo' },
+  { label: 'GitHub', handle: 'mof4thi', href: 'https://github.com/mof4thi' },
+  // Optional: add your Hack The Box profile here once you want it public, for example:
+  // { label: 'Hack The Box', handle: 'your-username', href: 'https://app.hackthebox.com/users/YOUR_ID' },
+];
+---
+
+<Base title={t('contact.title')} description={t('contact.description')}>
+  <div class="wrap narrow">
+    <header class="page-head">
+      <h1>{t('contact.title')}</h1>
+      <p>{t('contact.intro')}</p>
+    </header>
+
+    <dl class="facts">
+      {
+        links.map((l) => (
+          <>
+            <dt>{l.label}</dt>
+            <dd><a href={l.href}>{l.handle}</a></dd>
+          </>
+        ))
+      }
+    </dl>
+  </div>
+</Base>

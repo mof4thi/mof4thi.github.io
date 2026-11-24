@@ -1,60 +1,74 @@
 ---
 import '../styles/global.css';
-import ThemeSwitcher from '../components/ThemeSwitcher.astro';
+import Logo from '../components/Logo.astro';
+import { getLang, localize, switchLang, useTranslations } from '../i18n/ui';
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const siteName = 'Mohammed Fathi';
-const {
-  title,
-  description = 'Cybersecurity notes, writeups and projects by Mohammed Fathi.',
-} = Astro.props;
+// The language comes from the URL: /fr/... is French, everything else English.
+const lang = getLang(Astro.url);
+const t = useTranslations(lang);
+const other = switchLang(Astro.url);
 
-const fullTitle = title ? `${title} · ${siteName}` : `${siteName} · Cybersecurity`;
+const siteName = 'Mohammed Fathi';
+const { title, description = t('site.description') } = Astro.props;
+
+const fullTitle = title ? `${title} · ${siteName}` : `${siteName} · ${t('site.tagline')}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/og-image.png', Astro.site); // ADDED
+const enUrl = new URL(lang === 'en' ? Astro.url.pathname : other.href, Astro.site);
+const frUrl = new URL(lang === 'fr' ? Astro.url.pathname : other.href, Astro.site);
+const ogImage = new URL('/og-image.png', Astro.site);
 const path = Astro.url.pathname;
 const year = new Date().getFullYear();
 
 const nav = [
-  { href: '/writeups/', label: 'writeups' },
-//  { href: '/projects/', label: 'projects' },
-  { href: '/about/', label: 'about' },
-  { href: '/contact/', label: 'contact' },
+  { href: localize(lang, '/articles/'), label: t('nav.articles') },
+  { href: localize(lang, '/projects/'), label: t('nav.projects') },
+  { href: localize(lang, '/about/'), label: t('nav.about') },
+  { href: localize(lang, '/contact/'), label: t('nav.contact') },
 ];
 const isActive = (href: string) => path.startsWith(href);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="ocean">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-    <link rel="alternate" type="application/rss+xml" title={`${siteName} writeups`} href="/rss.xml" />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="fr" href={frUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="alternate" type="application/rss+xml" title={`${siteName} articles`} href="/rss.xml" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} /> <!-- ADDED -->
-    <meta property="og:image:width" content="1200" /> <!-- ADDED -->
-    <meta property="og:image:height" content="627" /> <!-- ADDED -->
-    <meta name="twitter:card" content="summary_large_image" /> <!-- ADDED -->
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Apply the saved theme before first paint to avoid a flash. -->
+    <!--
+      First visit to the English homepage from a French-language browser: go to /fr/.
+      Only on the homepage, and only until the visitor picks a language themselves.
+    -->
     <script is:inline>
       try {
-        var allowed = [ 'ocean', 'terminal', 'daylight'];
-        var saved = localStorage.getItem('theme');
-        if (saved && allowed.indexOf(saved) !== -1) {
-          document.documentElement.setAttribute('data-theme', saved);
+        if (location.pathname === '/' && !localStorage.getItem('lang')) {
+          var prefs = navigator.languages || [navigator.language || ''];
+          if (String(prefs[0] || '').toLowerCase().indexOf('fr') === 0) {
+            localStorage.setItem('lang', 'fr');
+            location.replace('/fr/');
+          }
         }
       } catch (e) {}
     </script>
@@ -62,14 +76,8 @@ const isActive = (href: string) => path.startsWith(href);
   <body>
     <header class="site-header">
       <div class="wrap">
-<a class="brand" href="/">
-  <svg class="brand-logo" viewBox="0 0 64 64" width="32" height="32" aria-hidden="true">
-    <rect x="1" y="1" width="62" height="62" rx="14" stroke-width="2" style="fill: var(--surface); stroke: var(--border)" />
-    <path d="M14 46V18l18 20 18-20v28" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--accent)" />
-  </svg>
-  Home
-</a>
-        <nav class="nav" aria-label="Main">
+        <a class="brand" href={localize(lang, '/')}><Logo size={22} />Mohammed Fathi</a>
+        <nav class="nav" aria-label={t('nav.main')}>
           {
             nav.map((item) => (
               <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
@@ -77,7 +85,11 @@ const isActive = (href: string) => path.startsWith(href);
               </a>
             ))
           }
-          <ThemeSwitcher />
+          <span class="lang-switch" role="group" aria-label={t('lang.group')}>
+            <a href={lang === 'en' ? path : other.href} hreflang="en" lang="en" data-lang="en" aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+            <span aria-hidden="true">/</span>
+            <a href={lang === 'fr' ? path : other.href} hreflang="fr" lang="fr" data-lang="fr" aria-current={lang === 'fr' ? 'true' : undefined}>FR</a>
+          </span>
         </nav>
       </div>
     </header>
@@ -91,10 +103,21 @@ const isActive = (href: string) => path.startsWith(href);
         <span>© {year}</span>
         <span class="footer-links">
           <a href="https://github.com/mof4thi">GitHub</a>
-          <a href="https://www.linkedin.com/in/mohammed-fathi-44325221a">LinkedIn</a>
+          <a href="https://www.linkedin.com/in/fathi-mo">LinkedIn</a>
           <a href="/rss.xml">RSS</a>
         </span>
       </div>
     </footer>
+
+    <script>
+      // Remember an explicit language choice, so the homepage stops auto-redirecting.
+      document.querySelectorAll<HTMLAnchorElement>('.lang-switch a[data-lang]').forEach((a) =>
+        a.addEventListener('click', () => {
+          try {
+            localStorage.setItem('lang', a.dataset.lang!);
+          } catch {}
+        }),
+      );
+    </script>
   </body>
 </html>

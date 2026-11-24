@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { getArticles } from '../lib/content';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const posts = await getArticles(lang);
+---
+
+<Base title={t('articles.title')} description={t('articles.description')}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{t('articles.title')}</h1>
+      <p>{t('articles.intro')}</p>
+    </header>
+
+    <ul class="post-list">
+      {posts.map((post) => <PostCard post={post} lang={lang} />)}
+    </ul>
+  </div>
+</Base>

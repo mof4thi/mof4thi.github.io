@@ -1,0 +1,64 @@
+---
+// "MF" monogram drawn as one stroke set. With `animate`, it draws itself on load.
+interface Props {
+  size?: number;
+  animate?: boolean;
+}
+const { size = 28, animate = false } = Astro.props;
+---
+
+<svg
+  class:list={['logo', { draw: animate }]}
+  viewBox="0 0 68 48"
+  width={size * (68 / 48)}
+  height={size}
+  aria-hidden="true"
+>
+  <path class="m" pathLength="1" d="M6 42V6l16 20L38 6v36" />
+  <path class="f" pathLength="1" d="M50 42V6h14M50 24h11" />
+</svg>
+
+<style>
+  .logo {
+    display: block;
+    flex: none;
+  }
+
+  path {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+
+  .m {
+    stroke: var(--text);
+  }
+
+  .f {
+    stroke: var(--accent);
+  }
+
+  .draw path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 0.9s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+  }
+
+  .draw .f {
+    animation-delay: 0.55s;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .draw path {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

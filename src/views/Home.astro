@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import Logo from '../components/Logo.astro';
+import Terminal from '../components/Terminal.astro';
+import { getArticles } from '../lib/content';
+import { localize, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const all = await getArticles(lang);
+const posts = all.slice(0, 3);
+const published = all.find((p) => !p.data.draft);
+const latest = published ? { id: published.id, title: published.data.title } : undefined;
+---
+
+<Base>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <Logo size={44} animate />
+        <h1 id="name" aria-label="Mohammed Fathi"><span aria-hidden="true">Mohammed Fathi</span></h1>
+        <p class="lead">{t('home.lead.1')} <strong>{t('home.lead.degree')}</strong> {t('home.lead.2')}</p>
+        <nav class="hero-links" aria-label={t('home.start')}>
+          <a class="primary" href={localize(lang, '/articles/')}>{t('home.cta.articles')}</a>
+          <a href={localize(lang, '/about/')}>{t('home.cta.about')}</a>
+          <a href={localize(lang, '/contact/')}>{t('home.cta.contact')}</a>
+        </nav>
+      </div>
+
+      <Terminal lang={lang} latest={latest} />
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>{t('home.latest')}</h2>
+        <a href={localize(lang, '/articles/')}>{t('home.all')}</a>
+      </div>
+      <ul class="post-list">
+        {posts.map((post) => <PostCard post={post} lang={lang} />)}
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<script>
+  // Name "decodes" from random characters, left to right, once per page load.
+  const target = document.querySelector<HTMLElement>('#name > span');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (target && !reduce) {
+    const final = target.textContent ?? '';
+    const glyphs = '!<>/\\[]{}=+*#$%01xX_';
+    const start = performance.now();
+    const duration = 1100;
+
+    const frame = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const settled = Math.floor(progress * final.length);
+      let html = '';
+      for (let i = 0; i < final.length; i++) {
+        const ch = final[i];
+        if (i < settled || ch === ' ') {
+          html += ch;
+        } else {
+          html += `<span class="scramble">${glyphs[Math.floor(Math.random() * glyphs.length)]
+            .replace('<', '&lt;')
+            .replace('>', '&gt;')}</span>`;
+        }
+      }
+      target.innerHTML = html;
+      if (progress < 1) requestAnimationFrame(frame);
+      else target.textContent = final;
+    };
+
+    requestAnimationFrame(frame);
+  }
+</script>

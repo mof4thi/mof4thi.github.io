@@ -1,29 +1,30 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { Article } from '../lib/content';
+import { readingTime } from '../lib/reading-time';
+import { localize, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
-  post: CollectionEntry<'writeups'>;
+  post: Article;
+  lang: Lang;
 }
 
-const { post } = Astro.props;
+const { post, lang } = Astro.props;
+const t = useTranslations(lang);
 const { title, date, summary, category, tags, draft } = post.data;
 const day = date.toISOString().slice(0, 10);
+const minutes = readingTime(post.body);
 ---
 
-<a class="post" href={`/writeups/${post.id}/`}>
+<li class="post">
   <div class="post-meta">
-    <span>{day}{draft ? ' · draft' : ''}</span>
+    <span>{day}</span>
     <span>{category}</span>
+    <span>{minutes} {t('article.minutes')}</span>
+    {draft && <span>({t('article.draft')})</span>}
   </div>
-  <h3>{title}</h3>
-  <p>{summary}</p>
-  {
-    tags.length > 0 && (
-      <div class="tags">
-        {tags.map((t) => (
-          <span class="tag">#{t}</span>
-        ))}
-      </div>
-    )
-  }
-</a>
+  <div>
+    <h3><a href={localize(lang, `/articles/${post.id}/`)}>{title}</a></h3>
+    <p>{summary}</p>
+    {tags.length > 0 && <div class="tags">{tags.join(', ')}</div>}
+  </div>
+</li>

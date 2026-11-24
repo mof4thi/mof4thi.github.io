@@ -2,12 +2,14 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="Not found">
-  <div class="wrap">
+<!-- One 404 page serves both languages, so it says it twice. -->
+<Base title="404">
+  <div class="wrap narrow">
     <header class="page-head">
       <p class="eyebrow">404</p>
       <h1>Nothing here</h1>
       <p>That page doesn't exist, or it moved. <a href="/">Back to the homepage</a>.</p>
+      <p lang="fr">Cette page n’existe pas, ou elle a été déplacée. <a href="/fr/">Retour à l’accueil</a>.</p>
     </header>
   </div>
 </Base>

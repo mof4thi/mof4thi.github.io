@@ -15,27 +15,28 @@ npm run preview    # serve the production build locally
 
 | What you want to change | File |
 | --- | --- |
-| Homepage text and focus cards | `src/pages/index.astro` |
+| Homepage text (and the terminal panel in `src/components/Terminal.astro`) | `src/pages/index.astro` |
 | About page | `src/pages/about.astro` |
-| Projects list | `src/pages/projects.astro` |
+| Projects (one Markdown file each) | `src/content/projects/*.md` |
 | Contact links | `src/pages/contact.astro` |
-| Colors and themes | `src/styles/global.css` |
-| Theme switcher dots | `src/components/ThemeSwitcher.astro` |
+| Colors | `src/styles/global.css` |
 | Nav links, footer, page layout | `src/layouts/Base.astro` |
-| Blog posts | `src/content/writeups/*.md` |
+| Articles | `src/content/articles/*.md` |
 
-## Writing a post
+## French version
 
-1. Copy `src/content/writeups/template-writeup.md` to a new file, e.g. `htb-machine-name.md` (the file name becomes the URL).
+Everything has a French twin under `/fr/`. UI text is in `src/i18n/ui.ts`, and French articles and projects go in a `fr/` subfolder next to the English file, with the same file name.
+
+## Writing an article
+
+1. Copy `src/content/articles/template-article.md` to a new file, e.g. `htb-machine-name.md` (the file name becomes the URL).
 2. Edit the front matter at the top and write the post in Markdown.
 3. Remove `draft: true` when it is ready to publish.
 4. Commit and push. The site rebuilds automatically.
 
-## Adding a theme
+## Adding a project
 
-1. In `src/styles/global.css`, copy a `[data-theme='...']` block, rename it, and change the colors.
-2. In `src/components/ThemeSwitcher.astro`, add an entry to the `themes` list.
-3. In `src/layouts/Base.astro`, add the id to the `allowed` list in the inline script.
+Add a Markdown file to `src/content/projects/`. The front matter (`title`, `summary`, `context`, `stack`, `order`, optional `featured` and `links`) fills the collapsed block, and the Markdown body is shown when it is opened.
 
 ## Deploying
 

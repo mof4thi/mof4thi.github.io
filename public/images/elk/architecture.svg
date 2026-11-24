@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="860" viewBox="0 0 1700 860" font-family="Inter, DejaVu Sans, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <g id="host">
+      <rect x="0" y="0" width="200" height="74" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" filter="url(#sh)"/>
+      <rect x="16" y="18" width="34" height="24" rx="3" fill="none" stroke="#475569" stroke-width="2"/>
+      <rect x="28" y="44" width="10" height="5" fill="#475569"/>
+      <rect x="22" y="49" width="22" height="3" rx="1" fill="#475569"/>
+      <text x="64" y="32" font-size="15" font-weight="600" fill="#0F172A">Linux server</text>
+      <rect x="64" y="42" width="108" height="20" rx="10" fill="#E6F4F3"/>
+      <text x="118" y="56" font-size="12" font-weight="600" fill="#0B7A75" text-anchor="middle">Elastic Agent</text>
+    </g>
+  </defs>
+
+  <rect width="1700" height="860" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="40" y="52" font-size="26" font-weight="700" fill="#0F172A">Self-hosted SIEM with the Elastic Stack: architecture</text>
+  <text x="40" y="80" font-size="15" fill="#64748B">Single-node deployment · Fleet-managed agents · TLS on every hop</text>
+
+  <!-- Monitored hosts -->
+  <rect x="30" y="120" width="250" height="560" rx="14" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="48" y="146" font-size="13" font-weight="700" fill="#64748B" letter-spacing="1">MONITORED HOSTS</text>
+  <use href="#host" x="55" y="170"/>
+  <use href="#host" x="55" y="270"/>
+  <use href="#host" x="55" y="370"/>
+  <use href="#host" x="55" y="470"/>
+  <text x="155" y="590" font-size="22" fill="#94A3B8" text-anchor="middle">⋮</text>
+  <text x="155" y="625" font-size="13" fill="#64748B" text-anchor="middle">System · Osquery · ClamAV</text>
+  <text x="155" y="645" font-size="13" fill="#64748B" text-anchor="middle">integrations via Fleet policy</text>
+
+  <!-- Bus from hosts -->
+  <g stroke="#475569" stroke-width="2" fill="none">
+    <line x1="255" y1="207" x2="340" y2="207"/>
+    <line x1="255" y1="307" x2="340" y2="307"/>
+    <line x1="255" y1="407" x2="340" y2="407"/>
+    <line x1="255" y1="507" x2="340" y2="507"/>
+    <line x1="340" y1="207" x2="340" y2="507"/>
+  </g>
+
+  <!-- ELK server group -->
+  <rect x="520" y="120" width="680" height="530" rx="16" fill="#FBFCFE" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="540" y="146" font-size="13" font-weight="700" fill="#64748B" letter-spacing="1">ELK SERVER (SINGLE NODE)</text>
+
+  <!-- Fleet Server -->
+  <g filter="url(#sh)">
+    <rect x="570" y="170" width="260" height="112" rx="12" fill="#E6F4F3" stroke="#0B7A75" stroke-width="2"/>
+  </g>
+  <text x="590" y="204" font-size="20" font-weight="700" fill="#0B7A75">Fleet Server</text>
+  <rect x="752" y="187" width="62" height="24" rx="12" fill="#FFFFFF" stroke="#0B7A75"/>
+  <text x="783" y="204" font-size="13" font-weight="600" fill="#0B7A75" text-anchor="middle">:8220</text>
+  <text x="590" y="236" font-size="14" fill="#334155">Enrollment · policies</text>
+  <text x="590" y="258" font-size="14" fill="#334155">Agent check-in &amp; upgrades</text>
+
+  <!-- Elasticsearch -->
+  <g filter="url(#sh)">
+    <rect x="570" y="392" width="260" height="120" rx="12" fill="#EAF1FD" stroke="#1D4ED8" stroke-width="2"/>
+  </g>
+  <text x="590" y="426" font-size="20" font-weight="700" fill="#1D4ED8">Elasticsearch</text>
+  <rect x="752" y="409" width="62" height="24" rx="12" fill="#FFFFFF" stroke="#1D4ED8"/>
+  <text x="783" y="426" font-size="13" font-weight="600" fill="#1D4ED8" text-anchor="middle">:9200</text>
+  <text x="590" y="458" font-size="14" fill="#334155">Store · index · search</text>
+  <text x="590" y="480" font-size="14" fill="#334155">Fleet indices · ingest pipelines</text>
+
+  <!-- Kibana -->
+  <g filter="url(#sh)">
+    <rect x="910" y="392" width="250" height="120" rx="12" fill="#FCE7F1" stroke="#BE185D" stroke-width="2"/>
+  </g>
+  <text x="930" y="426" font-size="20" font-weight="700" fill="#BE185D">Kibana</text>
+  <rect x="1082" y="409" width="62" height="24" rx="12" fill="#FFFFFF" stroke="#BE185D"/>
+  <text x="1113" y="426" font-size="13" font-weight="600" fill="#BE185D" text-anchor="middle">:5601</text>
+  <text x="930" y="458" font-size="14" fill="#334155">Dashboards · Fleet UI</text>
+  <text x="930" y="480" font-size="14" fill="#334155">Alerting rules</text>
+
+  <!-- Alert mailer -->
+  <g filter="url(#sh)">
+    <rect x="910" y="170" width="250" height="112" rx="12" fill="#FEF3C7" stroke="#B45309" stroke-width="2"/>
+  </g>
+  <text x="930" y="204" font-size="20" font-weight="700" fill="#B45309">Alert mailer</text>
+  <text x="930" y="236" font-size="14" fill="#334155">systemd service</text>
+  <text x="930" y="258" font-size="14" fill="#334155">tails kibana.log → swaks</text>
+
+  <!-- Snapshots -->
+  <g filter="url(#sh)">
+    <rect x="570" y="720" width="260" height="84" rx="12" fill="#F1F5F9" stroke="#64748B" stroke-width="2"/>
+  </g>
+  <text x="590" y="754" font-size="18" font-weight="700" fill="#334155">Snapshot repository</text>
+  <text x="590" y="782" font-size="14" fill="#475569">Dedicated backup storage</text>
+
+  <!-- SMTP -->
+  <g filter="url(#sh)">
+    <rect x="1270" y="170" width="200" height="112" rx="12" fill="#FFFBEB" stroke="#B45309" stroke-width="2"/>
+  </g>
+  <text x="1290" y="204" font-size="20" font-weight="700" fill="#B45309">SMTP server</text>
+  <text x="1290" y="236" font-size="14" fill="#334155">TLS :587</text>
+  <text x="1290" y="258" font-size="14" fill="#334155">→ alerts inbox</text>
+
+  <!-- Apache reverse proxy -->
+  <g filter="url(#sh)">
+    <rect x="1270" y="392" width="200" height="120" rx="12" fill="#F1F5F9" stroke="#334155" stroke-width="2"/>
+  </g>
+  <text x="1290" y="426" font-size="20" font-weight="700" fill="#334155">Apache</text>
+  <text x="1290" y="448" font-size="20" font-weight="700" fill="#334155">reverse proxy</text>
+  <text x="1290" y="478" font-size="14" fill="#334155">:443 · Let's Encrypt</text>
+  <text x="1290" y="498" font-size="14" fill="#334155">/fleet · /es paths</text>
+
+  <!-- Analyst -->
+  <circle cx="1600" cy="418" r="22" fill="#E2E8F0" stroke="#334155" stroke-width="2"/>
+  <path d="M1560 500 Q1560 448 1600 448 Q1640 448 1640 500 Z" fill="#E2E8F0" stroke="#334155" stroke-width="2"/>
+  <text x="1600" y="530" font-size="16" font-weight="700" fill="#0F172A" text-anchor="middle">SOC analyst</text>
+  <text x="1600" y="550" font-size="13" fill="#64748B" text-anchor="middle">browser</text>
+
+  <!-- ===== Arrows ===== -->
+  <g stroke="#475569" stroke-width="2" fill="none">
+    <!-- hosts <-> Fleet (control, dashed) -->
+    <path d="M340 226 L566 226" stroke-dasharray="7 5" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <!-- hosts -> ES (data) -->
+    <path d="M340 452 L566 452" stroke-width="3" marker-end="url(#arr)"/>
+    <!-- Fleet <-> ES -->
+    <path d="M700 286 L700 388" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <!-- ES <-> Kibana -->
+    <path d="M834 452 L906 452" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <!-- Kibana -> mailer -->
+    <path d="M1035 388 L1035 286" stroke-dasharray="7 5" marker-end="url(#arr)"/>
+    <!-- mailer -> SMTP -->
+    <path d="M1164 226 L1266 226" stroke-dasharray="7 5" marker-end="url(#arr)"/>
+    <!-- proxy -> Kibana -->
+    <path d="M1266 452 L1164 452" marker-end="url(#arr)"/>
+    <!-- analyst -> proxy -->
+    <path d="M1552 452 L1474 452" marker-end="url(#arr)"/>
+    <!-- ES -> snapshots -->
+    <path d="M700 516 L700 716" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- Arrow labels -->
+  <g font-size="13" fill="#334155">
+    <text x="453" y="206" text-anchor="middle" font-weight="600">enroll · policies · check-in</text>
+    <text x="453" y="248" text-anchor="middle" fill="#64748B">TLS :8220</text>
+    <text x="453" y="432" text-anchor="middle" font-weight="600">logs · metrics · events</text>
+    <text x="453" y="474" text-anchor="middle" fill="#64748B">TLS :9200</text>
+    <text x="712" y="334" font-weight="600">reads / writes</text>
+    <text x="712" y="352" font-weight="600">Fleet indices</text>
+    <text x="870" y="440" text-anchor="middle" fill="#64748B">query</text>
+    <text x="1047" y="334" font-weight="600">server-log</text>
+    <text x="1047" y="352" font-weight="600">alerts</text>
+    <text x="1215" y="214" text-anchor="middle" fill="#64748B">email</text>
+    <text x="1215" y="440" text-anchor="middle" fill="#64748B">HTTPS</text>
+    <text x="1215" y="474" text-anchor="middle" fill="#64748B">internal CA</text>
+    <text x="1513" y="440" text-anchor="middle" fill="#64748B">HTTPS</text>
+    <text x="712" y="612" font-weight="600">incremental</text>
+    <text x="712" y="630" font-weight="600">snapshots</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(1110,720)">
+    <rect x="0" y="0" width="360" height="84" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <line x1="20" y1="30" x2="70" y2="30" stroke="#475569" stroke-width="3" marker-end="url(#arr)"/>
+    <text x="84" y="35" font-size="14" fill="#334155">Data / request flow</text>
+    <line x1="20" y1="60" x2="70" y2="60" stroke="#475569" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arr)"/>
+    <text x="84" y="65" font-size="14" fill="#334155">Management / notification flow</text>
+  </g>
+</svg>

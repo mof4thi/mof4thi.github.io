@@ -1,0 +1,154 @@
+---
+import Base from '../layouts/Base.astro';
+import { render } from 'astro:content';
+import type { Article } from '../lib/content';
+import { readingTime } from '../lib/reading-time';
+import { localize, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  post: Article;
+  lang: Lang;
+}
+
+const { post, lang } = Astro.props;
+const t = useTranslations(lang);
+const { Content, headings } = await render(post);
+const { title, date, summary, category, tags } = post.data;
+const day = date.toISOString().slice(0, 10);
+const minutes = readingTime(post.body);
+
+// Table of contents: h2 entries, each with its h3 children.
+type Entry = { slug: string; text: string; children: { slug: string; text: string }[] };
+const toc: Entry[] = [];
+for (const h of headings) {
+  if (h.depth === 2) toc.push({ slug: h.slug, text: h.text, children: [] });
+  else if (h.depth === 3 && toc.length) toc[toc.length - 1].children.push({ slug: h.slug, text: h.text });
+}
+const showToc = toc.length >= 3;
+---
+
+<Base title={title} description={summary}>
+  <div class:list={['wrap', 'article-layout', { 'has-toc': showToc }]}>
+    <header class="article-head">
+      <a class="back" href={localize(lang, '/articles/')}>{t('article.back')}</a>
+      <h1>{title}</h1>
+      <div class="post-meta">
+        <span>{day}</span>
+        <span>{category}</span>
+        <span>{minutes} {t('article.minutes')}</span>
+      </div>
+      {tags.length > 0 && <div class="tags">{t('article.tags')}: {tags.join(', ')}</div>}
+    </header>
+
+    {
+      showToc && (
+        <aside class="toc">
+          <details>
+            <summary>{t('article.toc')}</summary>
+            <ol>
+              {toc.map((h) => (
+                <li data-slug={h.slug}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                  {h.children.length > 0 && (
+                    <ol>
+                      {h.children.map((c) => (
+                        <li data-slug={c.slug}>
+                          <a href={`#${c.slug}`}>{c.text}</a>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </details>
+        </aside>
+      )
+    }
+
+    <article
+      class="prose"
+      data-copy={t('code.copy')}
+      data-copied={t('code.copied')}
+      data-failed={t('code.failed')}
+    >
+      <Content />
+    </article>
+  </div>
+</Base>
+
+<script>
+  // Copy buttons on code blocks. Labels come from data attributes so they follow the page language.
+  const article = document.querySelector<HTMLElement>('article.prose');
+  const label = (key: 'copy' | 'copied' | 'failed') => article?.dataset[key] ?? key;
+  document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'code-block';
+    pre.replaceWith(wrap);
+    wrap.appendChild(pre);
+
+    const bar = document.createElement('div');
+    bar.className = 'code-bar';
+    const lang = pre.dataset.language;
+    if (lang && lang !== 'plaintext') {
+      const label = document.createElement('span');
+      label.textContent = lang;
+      bar.appendChild(label);
+    }
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = label('copy');
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pre.innerText.replace(/\n$/, ''));
+        btn.textContent = label('copied');
+      } catch {
+        btn.textContent = label('failed');
+      }
+      setTimeout(() => (btn.textContent = label('copy')), 1600);
+    });
+    bar.appendChild(btn);
+    wrap.insertBefore(bar, pre);
+  });
+
+  // Table of contents: always open on wide screens, and track the current section.
+  const toc = document.querySelector<HTMLElement>('.toc');
+  if (toc) {
+    const details = toc.querySelector('details')!;
+    const wide = window.matchMedia('(min-width: 1100px)');
+    const sync = () => (details.open = wide.matches);
+    sync();
+    wide.addEventListener('change', sync);
+
+    const items = Array.from(toc.querySelectorAll<HTMLLIElement>('li[data-slug]'));
+    const targets = items
+      .map((li) => ({ li, el: document.getElementById(li.dataset.slug!) }))
+      .filter((t): t is { li: HTMLLIElement; el: HTMLElement } => t.el !== null);
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      let current: (typeof targets)[number] | undefined;
+      for (const t of targets) {
+        if (t.el.getBoundingClientRect().top < 140) current = t;
+        else break;
+      }
+      items.forEach((li) => li.classList.remove('active', 'open'));
+      if (!current) return;
+      current.li.classList.add('active');
+      const top = current.li.parentElement?.closest('li') ?? current.li;
+      top.classList.add('open');
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>

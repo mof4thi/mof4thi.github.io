@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import { render } from 'astro:content';
+import { getProjects } from '../lib/content';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Projects live in src/content/projects/*.md, French in src/content/projects/fr/.
+const entries = await getProjects(lang);
+const projects = await Promise.all(
+  entries.map(async (p) => ({ ...p, Content: (await render(p)).Content })),
+);
+
+// Non-featured blocks sit two per row; if there's an odd one out, let it span the row.
+const small = projects.filter((p) => !p.data.featured);
+const lastWide = small.length % 2 === 1 ? small[small.length - 1].id : null;
+---
+
+<Base title={t('projects.title')} description={t('projects.description')}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{t('projects.title')}</h1>
+      <p>{t('projects.intro')}</p>
+    </header>
+
+    <div class="projects">
+      {
+        projects.map((p, i) => (
+          <details
+            class:list={['proj', { featured: p.data.featured, wide: p.id === lastWide }]}
+            id={p.id}
+            name="project"
+          >
+            <summary>
+              <div class="proj-top">
+                <span class="proj-num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="proj-context">{p.data.context}</span>
+              </div>
+              <h2>{p.data.title}</h2>
+              <p class="proj-summary">{p.data.summary}</p>
+              <div class="proj-foot">
+                <span class="proj-stack">{p.data.stack.join(' · ')}</span>
+                <span class="proj-toggle" aria-hidden="true" data-more={t('projects.more')} data-less={t('projects.less')} />
+              </div>
+            </summary>
+
+            <div class="proj-body">
+              <div class="prose">
+                <p.Content />
+              </div>
+              {p.data.links.length > 0 && (
+                <div class="proj-links">
+                  {p.data.links.map((l) => (
+                    <a href={l.href}>{l.label}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</Base>
+
+<script>
+  const blocks = Array.from(document.querySelectorAll<HTMLDetailsElement>('.proj'));
+
+  // Opening a block puts its id in the URL, so a specific project can be linked to.
+  const fromHash = () => {
+    const target = blocks.find((b) => `#${b.id}` === location.hash);
+    if (target) {
+      target.open = true;
+      target.scrollIntoView({ block: 'start' });
+    }
+  };
+  fromHash();
+  window.addEventListener('hashchange', fromHash);
+
+  blocks.forEach((b) => {
+    b.addEventListener('toggle', () => {
+      if (b.open) {
+        // Browsers without exclusive <details name> support: close the others ourselves.
+        blocks.forEach((o) => o !== b && (o.open = false));
+        history.replaceState(null, '', `#${b.id}`);
+        // Closing a block above this one can shift it off screen; bring it back.
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        requestAnimationFrame(() => {
+          const top = b.getBoundingClientRect().top;
+          if (top < 0 || top > window.innerHeight * 0.6) {
+            b.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+          }
+        });
+      } else if (location.hash === `#${b.id}`) {
+        history.replaceState(null, '', location.pathname);
+      }
+    });
+  });
+</script>

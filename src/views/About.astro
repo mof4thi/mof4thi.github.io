@@ -1,0 +1,160 @@
+---
+import Base from '../layouts/Base.astro';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Page copy in both languages. Keep the two versions in step when editing.
+const copy = {
+  en: {
+    heading: "Hi, I'm Mohammed",
+    sub: 'Cybersecurity professional based in Paris, France.',
+    intro: [
+      'I just finished my MSc in Cybersecurity and AI at EFREI. Before that, I spent 1 year and 9 months as a Cybersecurity operator apprentice at Vistory SAS working on all things SIEM and monitoring (Splunk Enterprise & ELK Stack), Linux & AD administration and automation (python, ansible, bash, powershell).',
+      "I'm now going deeper on the offensive side by preparing for the Hack The Box CPTS (Certified Penetration Testing Specialist). Understanding how attacks work makes me a better defender, and the reverse is true too.",
+    ],
+    focusTitle: 'What I focus on',
+    focus: [
+      { title: 'Blue team and SOC', text: 'Alert triage, detection, and incident handling, learned in a SOC apprenticeship.' },
+      { title: 'Offensive security', text: 'Methodical pentesting practice, currently working toward the HTB CPTS.' },
+      { title: 'Security and AI', text: 'The overlap I studied in my MSc: using ML to defend, and securing ML systems.' },
+    ],
+    certsTitle: 'Certifications',
+    certs: [
+      {
+        group: 'Security and infrastructure',
+        items: [
+          { name: 'ISO/IEC 27001 Lead Implementer', issuer: 'course completed' },
+          { name: 'Red Hat RH294: Linux Automation with Ansible', issuer: 'Red Hat' },
+          { name: 'CCNA: Introduction to Networks (ITN)', issuer: 'Cisco Networking Academy' },
+        ],
+      },
+      {
+        group: 'Data and AI',
+        items: [
+          { name: 'Deep Learning Specialization', issuer: 'DeepLearning.AI' },
+          { name: 'IBM Data Science Professional Certificate', issuer: 'IBM' },
+        ],
+      },
+      {
+        group: 'Languages',
+        items: [
+          { name: 'Linguaskill Business, C1+', issuer: 'Cambridge English' },
+          { name: 'DALF C1', issuer: 'Institut français' },
+        ],
+      },
+    ],
+    facts: [
+      ['Location', 'Paris, Île-de-France, France'],
+      ['Education', 'MSc Cybersecurity and AI, EFREI'],
+      ['Experience', 'SOC operator apprenticeship, Vistory (1 year 9 months)'],
+      ['Working on', 'HTB CPTS certification (in progress)'],
+      ['Languages', 'English, French'],
+    ],
+  },
+  fr: {
+    heading: 'Bonjour, je suis Mohammed',
+    sub: 'Professionnel de la cybersécurité basé à Paris.',
+    intro: [
+      'Je viens de terminer mon MSc Cybersécurité et IA à l’EFREI. Auparavant, j’ai passé 1 an et 9 mois en alternance comme opérateur cybersécurité chez Vistory SAS, où je travaillais sur tout ce qui touche au SIEM et à la supervision (Splunk Enterprise et ELK Stack), à l’administration Linux et Active Directory, et à l’automatisation (Python, Ansible, Bash, PowerShell).',
+      'Je me tourne désormais vers l’offensif en préparant la certification Hack The Box CPTS (Certified Penetration Testing Specialist). Comprendre le fonctionnement des attaques fait de moi un meilleur défenseur, et l’inverse est tout aussi vrai.',
+    ],
+    focusTitle: 'Mes domaines de prédilection',
+    focus: [
+      { title: 'Blue team et SOC', text: 'Tri des alertes, détection et gestion des incidents, appris en alternance au sein d’un SOC.' },
+      { title: 'Sécurité offensive', text: 'Pratique méthodique du pentest, avec la certification HTB CPTS en ligne de mire.' },
+      { title: 'Sécurité et IA', text: 'Le croisement étudié pendant mon MSc : utiliser le machine learning pour défendre, et sécuriser les systèmes de ML.' },
+    ],
+    certsTitle: 'Certifications',
+    certs: [
+      {
+        group: 'Sécurité et infrastructure',
+        items: [
+          { name: 'ISO/IEC 27001 Lead Implementer', issuer: 'formation suivie' },
+          { name: 'Red Hat RH294 : Linux Automation with Ansible', issuer: 'Red Hat' },
+          { name: 'CCNA : Introduction to Networks (ITN)', issuer: 'Cisco Networking Academy' },
+        ],
+      },
+      {
+        group: 'Data et IA',
+        items: [
+          { name: 'Deep Learning Specialization', issuer: 'DeepLearning.AI' },
+          { name: 'IBM Data Science Professional Certificate', issuer: 'IBM' },
+        ],
+      },
+      {
+        group: 'Langues',
+        items: [
+          { name: 'Linguaskill Business, C1+', issuer: 'Cambridge English' },
+          { name: 'DALF C1', issuer: 'Institut français' },
+        ],
+      },
+    ],
+    facts: [
+      ['Localisation', 'Paris, Île-de-France'],
+      ['Formation', 'MSc Cybersécurité et IA, EFREI'],
+      ['Expérience', 'Alternance opérateur SOC, Vistory (1 an et 9 mois)'],
+      ['En cours', 'Certification HTB CPTS (en préparation)'],
+      ['Langues', 'Anglais, français'],
+    ],
+  },
+}[lang];
+---
+
+<Base title={t('about.title')} description={t('about.description')}>
+  <div class="wrap narrow">
+    <header class="page-head">
+      <h1>{copy.heading}</h1>
+      <p>{copy.sub}</p>
+    </header>
+
+    <div class="prose">
+      {copy.intro.map((p) => <p>{p}</p>)}
+
+      <h2>{copy.focusTitle}</h2>
+      <ul class="plain-list">
+        {
+          copy.focus.map((f) => (
+            <li>
+              <strong>{f.title}.</strong> {f.text}
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>{copy.certsTitle}</h2>
+      <div class="certs">
+        {
+          copy.certs.map((g) => (
+            <section>
+              <h3>{g.group}</h3>
+              <ul>
+                {g.items.map((c) => (
+                  <li>
+                    <span class="cert-name">{c.name}</span>
+                    <span class="cert-issuer">{c.issuer}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+
+      <dl class="facts">
+        {
+          copy.facts.map(([k, v]) => (
+            <>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</Base>
