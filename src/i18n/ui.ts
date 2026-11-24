@@ -38,7 +38,7 @@ export const ui = {
     'home.start': 'Start here',
     'home.cta.articles': 'read the articles',
     'home.cta.about': 'about me',
-    'home.cta.contact': 'contact',
+    'home.cta.projects': 'see the projects',
     'home.latest': 'Latest articles',
     'home.all': 'all articles',
 
@@ -94,7 +94,7 @@ export const ui = {
     'home.start': 'Pour commencer',
     'home.cta.articles': 'lire les articles',
     'home.cta.about': 'à propos',
-    'home.cta.contact': 'contact',
+    'home.cta.projects': 'voir les projets',
     'home.latest': 'Derniers articles',
     'home.all': 'tous les articles',
 

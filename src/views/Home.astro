@@ -27,8 +27,8 @@ const latest = published ? { id: published.id, title: published.data.title } : u
         <p class="lead">{t('home.lead.1')} <strong>{t('home.lead.degree')}</strong> {t('home.lead.2')}</p>
         <nav class="hero-links" aria-label={t('home.start')}>
           <a class="primary" href={localize(lang, '/articles/')}>{t('home.cta.articles')}</a>
+          <a class="secondary" href={localize(lang, '/projects/')}>{t('home.cta.projects')}</a>
           <a href={localize(lang, '/about/')}>{t('home.cta.about')}</a>
-          <a href={localize(lang, '/contact/')}>{t('home.cta.contact')}</a>
         </nav>
       </div>
 
