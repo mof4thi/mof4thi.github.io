@@ -30,6 +30,7 @@ export const ui = {
     'nav.contact': 'contact',
     'nav.main': 'Main',
     'lang.group': 'Language',
+    'og.alt': 'Mohammed Fathi, cybersecurity, Paris. MSc Cybersecurity and AI, EFREI.',
 
     'home.lead.1': 'Cybersecurity professional based in Paris, with an',
     'home.lead.degree': 'MSc in Cybersecurity and AI',
@@ -85,6 +86,7 @@ export const ui = {
     'nav.contact': 'contact',
     'nav.main': 'Navigation principale',
     'lang.group': 'Langue',
+    'og.alt': 'Mohammed Fathi, cybersécurité, Paris. MSc Cybersécurité et IA, EFREI.',
 
     'home.lead.1': 'Professionnel de la cybersécurité basé à Paris, titulaire d’un',
     'home.lead.degree': 'MSc Cybersécurité et IA',

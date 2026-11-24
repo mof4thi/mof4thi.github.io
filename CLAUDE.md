@@ -56,4 +56,4 @@ The homepage hero has three animations, all skipped under `prefers-reduced-motio
 - The station blanche project was built for a defense-sector client. Never add the client's name, repository links, hostnames or internal paths.
 
 - `src/content/articles/template-article.md` is the starting point for new articles. It has `draft: true`, so it only shows up in `npm run dev`.
-- `public/og-image.png` is rendered from an SVG with `sharp`. If you change the palette, regenerate it to match.
+- **Link-preview images** (`public/og-image.png`, `public/og-image-fr.png`, 1200×627, used by LinkedIn and other sites) are rendered from `scripts/og/en.svg` and `fr.svg` with `node scripts/og/render.mjs`. They repeat the homepage terminal's status lines, so when a status changes (e.g. CPTS passed), update `src/components/Terminal.astro` and both SVGs, then re-render.
