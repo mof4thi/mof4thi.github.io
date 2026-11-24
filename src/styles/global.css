@@ -258,9 +258,9 @@ p {
 
 /* Tinted red buttons that fill solid on hover. Primary is a stronger tint than secondary. */
 .hero-links a.primary {
-  background: color-mix(in srgb, var(--accent) 32%, transparent);
-  border-color: var(--accent);
-  color: color-mix(in srgb, var(--accent) 80%, var(--text));
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 80%, transparent);
+  color: color-mix(in srgb, var(--accent) 75%, var(--text));
 }
 
 .hero-links a.secondary {
