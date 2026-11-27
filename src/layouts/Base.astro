@@ -74,6 +74,11 @@ const isActive = (href: string) => path.startsWith(href);
         }
       } catch (e) {}
     </script>
+
+    <!-- Visitor stats (GoatCounter, no cookies). Production builds only, so dev visits aren't counted. -->
+    {import.meta.env.PROD && (
+      <script is:inline data-goatcounter="https://mof4thi.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+    )}
   </head>
   <body>
     <header class="site-header">
